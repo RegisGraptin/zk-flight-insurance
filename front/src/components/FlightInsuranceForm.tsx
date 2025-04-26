@@ -1,12 +1,7 @@
 "use client";
+import { FlightFormData } from "@/types/flight";
 import { useState } from "react";
 import { GiCalendar, GiCommercialAirplane, GiTicket } from "react-icons/gi";
-
-interface FlightFormData {
-  carrierCode: string;
-  flightNumber: string;
-  scheduledDepartureDate: string;
-}
 
 // Interface for API response (you can modify this based on your actual response structure)
 interface FlightValidationResponse {
@@ -76,8 +71,8 @@ export default function FlightInsuranceForm() {
     console.log("Submitting flight data:", data);
 
     // Example of how to implement the fetch:
-    /*
-    const response = await fetch('/api/validate-flight', {
+    
+    const response = await fetch('/api/check-flight', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -88,8 +83,11 @@ export default function FlightInsuranceForm() {
     if (!response.ok) throw new Error('Validation failed');
     
     const result: FlightValidationResponse = await response.json();
-    return result.isValid;
-    */
+
+    console.log("API result")
+    console.log(result)
+    return true;
+    
 
     // Mock validation
     return data.carrierCode === "AF" && data.flightNumber === "0264";
