@@ -1,7 +1,6 @@
 mod types;
 
 use types::Premium;
-use openzeppelin::introspection;
 
 #[starknet::interface]
 pub trait IFlightInsurance<TContractState> {
@@ -21,7 +20,8 @@ pub trait IFlightInsurance<TContractState> {
 #[starknet::contract]
 mod FlightInsurance {
     
-    use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
+    use crate::Premium;
+use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
     
     use openzeppelin::introspection::src5::SRC5Component;
     use openzeppelin::token::erc721::{ERC721Component, ERC721HooksEmptyImpl};
@@ -58,7 +58,7 @@ mod FlightInsurance {
         let name = "FlightInsurance";
         let symbol = "FLI";
         let base_uri = "";
-        let token_id = 1;
+        // let token_id = 1;
 
         self.erc721.initializer(name, symbol, base_uri);
     }
@@ -67,15 +67,15 @@ mod FlightInsurance {
     #[abi(embed_v0)]
     impl FlightInsuranceImpl of super::IFlightInsurance<ContractState> {
         
-        fn verify(ref self: TContractState){
+        fn verify(ref self: ContractState){
 
         }
         
-        fn buy(ref self: TContractState, price: felt252) {
+        fn buy(ref self: ContractState, price: felt252) {
 
         }
 
-        fn claim(ref self: TContractState, insuranceId: felt252, premium: Premium) {}
+        fn claim(ref self: ContractState, insuranceId: felt252, premium: Premium) {}
     }
 }
 
