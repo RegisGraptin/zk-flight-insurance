@@ -1,7 +1,7 @@
 mod types;
 
 use types::Premium;
-
+use openzeppelin::introspection;
 
 #[starknet::interface]
 pub trait IFlightInsurance<TContractState> {
@@ -12,13 +12,19 @@ pub trait IFlightInsurance<TContractState> {
 
 }
 
-/// Simple contract for managing balance.
+
+// ??
+// https://www.starknet.io/tutorials/cairo-lang-zero-to-one-session-4-building-frontend-on-starknet/
+
+// https://docs.openzeppelin.com/contracts-cairo/1.0.0/erc721
+
 #[starknet::contract]
 mod FlightInsurance {
     
     use core::starknet::storage::{StoragePointerReadAccess, StoragePointerWriteAccess};
-    use openzeppelin_introspection::src5::SRC5Component;
-    use openzeppelin_token::erc721::{ERC721Component, ERC721HooksEmptyImpl};
+    
+    use openzeppelin::introspection::src5::SRC5Component;
+    use openzeppelin::token::erc721::{ERC721Component, ERC721HooksEmptyImpl};
     
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
