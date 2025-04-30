@@ -1,9 +1,11 @@
 
 use sha256;
 use noir_rsa::rsa;
-use dep::bignum::RuntimeBigNum;
+use noir_rsa::types::RBN2048;
 
-fn verify_flight(
+
+// verify_flight
+fn main(
     carrier_code: [Field; 2],     // e.g. 'A' = 65, 'F' = 70
     flight_number: [Field; 4],    // '0','2','6','4' as ASCII at max, can be other char as 4DF
     date: [Field; 3],             // [2025, 4, 29]
@@ -12,60 +14,54 @@ fn verify_flight(
     insurance_valid: Field,       // 1 for true
     // Public 
     hash_data: [u8; 32], 
-    signature: RuntimeBigNum<NumLimbs, ModBits>,           // The signature from the certificate
+    signature: RBN2048,           // The signature from the certificate
     public_key: Field           // The public key to verify the signature
 ) {
 
     // FIXME: optimization send only the hash??
     // Issue could be on the date? What if I generate locally multiple issue and wait until we get the right one?
 
-
     // Field::from(32) => encode the ASCII " "
-
-    // Concatenate fields into a list for hashing
-    let mut combined_data: [Field; 12] = [
-        carrier_code[0],          // 'A' -> 65
-        carrier_code[1],          // 'F' -> 70
-        Field::from(32),          // Placeholder for flight_number[0]
-        Field::from(32),          // Placeholder for flight_number[1]
-        Field::from(32),          // Placeholder for flight_number[2]
-        Field::from(32),          // Placeholder for flight_number[3]
-        date[0],                  // 2025
-        date[1],                  // 4
-        date[2],                  // 29
-        price,                    // 25
-        plane_valid,              // 1
-        insurance_valid           // 1
-    ];
 
     // Verify the flag are correct
     assert_eq(plane_valid, 1);
     assert_eq(insurance_valid, 1);
+    assert((price as u8) > 0);
+    assert((price as u8) < 200);
+
+    // Concatenate fields into a list for hashing
+    let mut combined_data: [u8; 12] = [
+        carrier_code[0] as u8,          // 'A' -> 65
+        carrier_code[1] as u8,          // 'F' -> 70
+        Field::from(32) as u8,          // Placeholder for flight_number[0]
+        Field::from(32) as u8,          // Placeholder for flight_number[1]
+        Field::from(32) as u8,          // Placeholder for flight_number[2]
+        Field::from(32) as u8,          // Placeholder for flight_number[3]
+        date[0] as u8,                  // 2025  FIXME:
+        date[1] as u8,                  // 4
+        date[2] as u8,                  // 29
+        price as u8,                    // 25
+        plane_valid as u8,              // 1
+        insurance_valid as u8           // 1
+    ];
+
 
     // Flight number can be variable put up to 4 character
     for i in 0..flight_number.len() {  
-        combined_data[2+i] = flight_number[i];
-    }
-
-    let mut byte_data: [u8; 96] = [0 as u8; 96];  // 12 * 8 bytes per Field element
-    for i in 0..combined_data.len() {
-        let bytes = combined_data[i].to_be_bytes(); 
-        for j in 0..8 {
-            byte_data[i * 8 + j] = bytes[j];
-        }
+        combined_data[2+i] = flight_number[i] as u8;
     }
 
     // Compute the hash of the combined data using Poseidon
-    let hashed_data: [u8; 32] = sha256::digest(byte_data).into();
+    let hashed_data: [u8; 32] = sha256::digest(combined_data).into();
 
     // Check the input hash
     assert_eq(hash_data, hashed_data);
 
-    rsa::verify_sha256_pkcs1v15(
+    assert(rsa::verify_sha256_pkcs1v15(
         hashed_data, 
         signature, 
         65537  // Mostly used parameter (fixed)
-    );
+    ));
 
 }
 
