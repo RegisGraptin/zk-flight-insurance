@@ -1,13 +1,10 @@
 "use client";
-import { FlightFormData } from "@/types/flight";
+import { FlightApiResponse, FlightFormData } from "@/types/flight";
 import { useState } from "react";
 import { GiCalendar, GiCommercialAirplane, GiTicket } from "react-icons/gi";
+import FlighInsuranceBuy from "./FlighInsuranceBuy";
 
 // Interface for API response (you can modify this based on your actual response structure)
-interface FlightValidationResponse {
-  isValid: boolean;
-  message?: string;
-}
 
 export default function FlightInsuranceForm() {
   const [formData, setFormData] = useState<FlightFormData>({
@@ -16,6 +13,8 @@ export default function FlightInsuranceForm() {
     scheduledDepartureDate: "",
   });
   const [loading, setLoading] = useState(false);
+  const [isFlightValid, setIsFlightValid] = useState(false);
+  const [flightData, setFlightData] = useState<FlightApiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [validationResult, setValidationResult] = useState<string | null>(null);
 
@@ -31,6 +30,7 @@ export default function FlightInsuranceForm() {
     e.preventDefault();
     setError(null);
     setValidationResult(null);
+    setIsFlightValid(false);
 
     // Basic validation
     if (
@@ -56,6 +56,8 @@ export default function FlightInsuranceForm() {
           "Flight not found in our system. Please verify your flight details.",
         );
       }
+
+      setIsFlightValid(isValid);
     } catch (err) {
       setError("Error validating flight. Please try again.");
     } finally {
@@ -63,15 +65,12 @@ export default function FlightInsuranceForm() {
     }
   };
 
-  // TODO: Implement actual API call
   const checkFlightValidity = async (
     data: FlightFormData,
   ): Promise<boolean> => {
-    // TODO: Replace this mock implementation with actual fetch call
     console.log("Submitting flight data:", data);
 
     // Example of how to implement the fetch:
-    
     const response = await fetch('/api/check-flight', {
       method: 'POST',
       headers: {
@@ -82,10 +81,11 @@ export default function FlightInsuranceForm() {
 
     if (!response.ok) throw new Error('Validation failed');
     
-    const result: FlightValidationResponse = await response.json();
+    const result: FlightApiResponse = await response.json();
 
     console.log("API result")
     console.log(result)
+    setFlightData(result );
     return true;
     
 
@@ -200,20 +200,26 @@ export default function FlightInsuranceForm() {
               )}
             </button>
           </div>
-
-          {/* Validation Messages */}
+        </form>
+        <div>
+                    {/* Validation Messages */}
           {error && (
             <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
               {error}
             </div>
           )}
 
-          {validationResult && (
-            <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-              {validationResult}
-            </div>
+          {validationResult && flightData && (
+            <>
+              <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+                {validationResult}
+              </div>
+
+              <FlighInsuranceBuy insuranceData={flightData} />
+            </>
           )}
-        </form>
+
+        </div>
       </div>
     </section>
   );

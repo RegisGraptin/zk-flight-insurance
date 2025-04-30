@@ -20,11 +20,11 @@ export default function Header() {
           {/* Desktop Navigation */}
           <div className="flex items-center space-x-6">
             {/* Add any additional nav items here */}
-            <ConnectButton
+            {/* <ConnectButton
               accountStatus="full"
               chainStatus="full"
               showBalance={false}
-            />
+            /> */}
           </div>
 
           {/* Mobile Menu Button (hidden on desktop) */}

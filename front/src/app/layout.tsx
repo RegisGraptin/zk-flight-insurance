@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { WalletProvider } from "@/components/wallet/WalletProvider";
+import { StarknetProvider } from "@/components/wallet/StarknetProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <WalletProvider>{children}</WalletProvider>
+        <StarknetProvider>{children}</StarknetProvider>
       </body>
     </html>
   );

@@ -42,6 +42,8 @@ export const POST = async (req: NextRequest) => {
     const flightData = (await res.json())["data"][0];
 
 
+    console.log(flightData);
+
     // Fetch Flight Delay Prediction
     // https://developers.amadeus.com/self-service/category/flights/api-doc/flight-delay-prediction
 
@@ -72,8 +74,16 @@ export const POST = async (req: NextRequest) => {
     const fligthDelayJson = await flighDelayResponse.json();
     const flightDelayData = fligthDelayJson["data"];
     
-    const premium = computePremium(flightDelayData)
-    console.log("premium computed: ", premium)
+    console.log(fligthDelayJson);
+
+    let premium;
+    if ("errors" in fligthDelayJson) {
+        console.log("Fake premium generated!!")
+        premium = 25;
+    } else {
+        premium = computePremium(flightDelayData)
+        console.log("premium computed: ", premium)
+    }
 
     const userData = {
         ...data,
