@@ -13,9 +13,9 @@ fn main(
     plane_valid: Field,           // 1 for true
     insurance_valid: Field,       // 1 for true
     // Public 
-    hash_data: [u8; 32], 
-    signature: RBN2048,           // The signature from the certificate
-    public_key: Field           // The public key to verify the signature
+    hash_data: pub [u8; 32], 
+    signature: pub RBN2048,           // The signature from the certificate
+    public_key: pub Field           // The public key to verify the signature
 ) {
 
     // FIXME: optimization send only the hash??
@@ -28,6 +28,11 @@ fn main(
     assert_eq(insurance_valid, 1);
     assert((price as u8) > 0);
     assert((price as u8) < 200);
+
+    assert((date[0] as u8) < 20);
+    assert((date[1] as u8) < 20);
+
+    // FIXME: 
 
     // Concatenate fields into a list for hashing
     let mut combined_data: [u8; 12] = [

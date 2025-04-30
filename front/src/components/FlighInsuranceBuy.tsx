@@ -1,6 +1,8 @@
 import { FlightApiResponse } from '@/types/flight';
+import { useAccount, useConnect } from '@starknet-react/core';
 import { IoShieldCheckmarkOutline } from 'react-icons/io5';
 import { LuBadgeCheck } from 'react-icons/lu';
+import { connect, StarknetkitConnector, useStarknetkitConnectModal } from 'starknetkit';
 
 interface Payouts {
   [key: string]: number;
@@ -17,10 +19,21 @@ export default function FlightInsuranceBuy({
   insuranceData
 }: { insuranceData: FlightApiResponse }) {
 
+    const { connect, connectors } = useConnect();
+  const { starknetkitConnectModal } = useStarknetkitConnectModal({
+    connectors: connectors as StarknetkitConnector[],
+  });
+  const { address, status } = useAccount();
+
   const isValid = insuranceData.data.planeValid && insuranceData.data.insuranceValid;
 
-    function subscribeInsurance() {
+    async function subscribeInsurance() {
         console.log("Test")
+        const { connector } = await starknetkitConnectModal();
+      if (!connector) {
+        return;
+      }
+      await connect({ connector });
     }
 
   return (
