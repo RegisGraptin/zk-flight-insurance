@@ -1,6 +1,26 @@
+<a id="readme-top"></a>
 
+<br />
+<div align="center">
+  <a href="https://github.com/RegisGraptin/zk-flight-insurance">
+    <img src="./logo.jpeg" alt="Logo" width="250" height="250">
+  </a>
 
-# ZK-Flight: Privacy-Preserving On-Chain Flight Insurance
+<h3 align="center">ZK-Flight</h3>
+<p align="center" style="font-style: italic; font-size: 1.2em;">Built during <a href="https://www.noirhack.com/">NoirHack 2025</a></p>
+  <p align="center">
+    Privacy-Preserving On-Chain Flight Insurance
+    <br />
+    <br />
+    <a href="https://github.com/RegisGraptin/zk-flight-insurance">Code</a>
+    &middot;
+    <a href="#">View Demo</a>
+    &middot;
+    <a href="#">Video Presentation</a>
+    
+  </p>
+</div>
+
 
 On-chain insurance enables clear, programmable rules and decentralized management. However, current implementations suffer from a critical flaw: lack of privacy. Anyone can observe insurance purchases and infer user habits.
 
