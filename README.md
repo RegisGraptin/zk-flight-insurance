@@ -27,19 +27,21 @@ On-chain insurance enables clear, programmable rules and decentralized managemen
 ZK-Flight addresses this limitation by leveraging zero-knowledge (ZK) proofs to preserve user privacy. Our system maintains the benefits of decentralization and transparency in claim processing, while ensuring that individual flight data remains confidential.
 
 
-## How does it works / User workflow
+## How does it works
 
-To manage the insurance and flght data, we are using the Amadeus API, allowing us to fetch flight information and flight delay prediction to compute the insurance premium. 
+To provide accurate information on flights, we are relying on Amadeus API allowing us to fetch fights information and delay prediction enabling us to compute insurance premium.
 
-To propose this services, the user will first search for his flight on the website. Then, on the server, we are going to use the Amadeus API to fetch the flight information and in the case of existing one, compute the insurance price. Then, once the data computed, we are going to aggregate them and signed it with the server certificat. All those information are then send to the user, who can validate and generate a ZK proof of the flight information. To subscribe to the insurance, the user can then sign a transaction with the ZK proof attached. On the contract side, it is going to mint a new NFT that will be sent to the user.
+When users wants to insure his plane, he will first need to search for his flight on the website. On the server side, we are going to use the Amadeus API to fetch flight information and in the case of existing one, compute the insurance price. 
 
-On the scenario, the flight got delay, the user will have to fetch the flight information using the server. Take those information signed by it and by using the first ZK proof, generate a new ZK proof allowing them to confirmed that the flight was delay. Once done, he can then sign a transaction and request the smart contract.
+On the ongoing process, we are aggregating all the flight information in a structure json and the server will signed it using his own certificate. By signing it, the server acknoledge all the information from the Amadeus API, and confirmed the insurance price. This constructed json will then be sent to the user, who can then generate locally a ZK proof using the provided data and the signature attached to it. To subscribe to an insurance, the user can then sign a transaction with the ZK proof attached. On the contract side, it is going to mint a new NFT that will be sent to the user.
+
+In the scenario where the flight got delayed, the user will have to fetch the flight information using the server. Take those information signed by the server and used it locally with the first ZK proof to generate a new one confirming that the flight got delayed. Once generated, he can then sign a new transaction and request to be paid from the smart contract.
 
 
-## Limitation
+## API Limitation
 
-Currently, one of the main limitation is that we are relying on a pay services from Amadeus. Meaning that for user experience, we need to have a server that is going to sign and manage the transaction. 
-This can introduce a lack of trust for the user as the server will see the user request. He may not know which one he took as he can request multiple one but still guess the user flight. 
+Currently, one of the main limitation is that we are relying on a paid third-party services from Amadeus. This requires a backend server to fetch and sign flight data on behalf of the user.
+Consequently, this introduces potential trust issues, as the server will see the user request. He may not know which one the user took as he can request multiple one but still guess the user flight. 
 
 
 ## Premium computation
@@ -53,54 +55,17 @@ Our insurance system can be decomposed in 4 states.
 
 To be able to compute the premium we are using the Amadeus [api endpoint](https://developers.amadeus.com/self-service/category/flights/api-doc/flight-delay-prediction).
 
-It gives us a set of probabilities for each state. Then, we are computing the probability weigthed given us the expected cost.
+It gives us a set of probabilities for each state. Then, we are computing the probability weigthed given us the expected cost, allowing us to compute the premium price.
 
 
+## User verification 
+
+At the moment, we do not introduce user verification. However, we want to avoid user to subscribe mutliple times an insurance. To address this issue, one possibility could be to leverage ZK Passport, allowing us to attached to one address a passport proof, which will then limit the number of subscriptions possible.
 
 
-## Limit user flood
+## Insurance pool - Leverage liquidity
 
-A verification needs to be made to avoid too much insurance subscription. 
-Also, avoid subscription just before close to have the information or eventually after.
-
-
-## Amadeus Flight API
-
-
-test.api.amadeus.com/v1
-
-
-## Insurance pool 
-
-By having liquidity available and on a long run a rentable mechanism. 
-We can provide other way to remunerate stagnate liuquidty. We can use it for landing on only a part of the pool.
-
-
-## Insurance policies
-
-Delays < 15 minutes 
-Delays of 15-30 minutes
-Delays of 30-45 minutes
-Delays of 45+ minutes
-
-Customer selects a flight they want to insure by providing flight data (airline code, flight number, departure/arrival airports, and date).
-Premium calculation is based on statistics of the flight's historical performance. The premium amount reflects the risk of delay/cancellation.
-Payouts are calculated at the time of purchase based on the premium amount, with maximum caps to limit risk exposure.
-
-
-
-
-
-
-
-
-Oracle Trust Minimization
-To address your concern about trusting the oracle data, we can implement several safeguards:
-Multi-Oracle Consensus: Require data to be signed by multiple independent flight data providers
-Delayed Finality: Allow a challenge period for incorrect flight database entries
-Public Verifiability: Make the flight database publicly queryable, even though individual policies remain private
-Cryptographic Attestation: Have oracles sign their datasets with secure timestamps
-
+Having liquidity available for the protocol is crucial as we need to be able to pay users. However, not all the liquidity needs to be ready at a given time. It is why it can be interesting to invest a part of it in lending protocol, which can generate an extra yield and can be removed and became available in case we need more liquidity to pay users. By doing so, we are multiplying the source of yield for the protocol.
 
 
 # Use Garaga Starknet
