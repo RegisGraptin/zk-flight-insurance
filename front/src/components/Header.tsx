@@ -1,6 +1,5 @@
 "use client";
 import "@rainbow-me/rainbowkit/styles.css";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
 
 export default function Header() {

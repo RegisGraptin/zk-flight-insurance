@@ -1,4 +1,3 @@
-import canonicalize from 'canonicalize';
 import { createHash, createPrivateKey, createSign } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';

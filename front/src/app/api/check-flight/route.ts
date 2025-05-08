@@ -2,7 +2,6 @@ import { FlightFormData } from '@/types/flight';
 import { getAccessToken } from '@/utils/amadeus/api';
 import { computePremium } from '@/utils/insurance/premium';
 import { signFlightData } from '@/utils/sign';
-import { createSign } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 // TODO: Fetch access token based on credentials
@@ -19,7 +18,7 @@ function extractDateFromDatetime(datetime: string): string {
 
 export const POST = async (req: NextRequest) => {
   
-    let data: FlightFormData = await req.json();
+    const data: FlightFormData = await req.json();
     console.log(data);
   
     // Fetch the access token
